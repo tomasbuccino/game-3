@@ -3,8 +3,7 @@
 	require_once("connection.php");
     $connection = new connection;
 
-
-    $query = "INSERT INTO partida (username) VALUES ('hola')";
+    $query = "INSERT INTO partidas (player_1) VALUES ('brenda')";
 		if (mysqli_query ($connection->connected, $query)) {
 			echo "Escribio";
 		} else {

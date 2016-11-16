@@ -2,14 +2,29 @@
 <html>
     <head>  
         <meta charset="utf-8" />
-        <title> Aventura </title>
-        <!-- <link rel="icon" href="assets/images/icon.png"> -->
+        <title> Aventura - Empezar!</title>
+        <link rel="stylesheet" href="css/styles.css">
     </head>
 
     <body>
-	    <main id="game"></main>
-        <script src="utils/phaser.js"></script>
-		<script src="utils/jquery.js"></script>
-		<script src="main.js"></script>
+        <div class="log-in">
+            <p>Aventura</p>
+            <!--  <form action="game.html" method="post">-->
+            <input type="text" placeholder="username" id="username"/>
+            <!-- ver si juega contra sí mismo cuando no hay jugadores -->
+            <button type="submit" id="log-in">log in</button>
+        </div>
+        <div class="select-users">
+            <select name="userslist" id="userlist"></select>
+            <button type="submit" id="play-game">Play!</button>
+        </div>
+                
+                
+            <!-- </form> -->
+            <!-- 
+            <label for="">Todavia no tenes usuario?</label>
+                <input type="submit" value="registrate" name="" id="register-user"/> -->
+        <script src="utils/jquery.js"></script>
+		<script src="actions.js"></script>
     </body>  
 </html>  
