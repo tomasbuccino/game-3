@@ -16,11 +16,12 @@ $(document).ready(function(){
             dataType: "json"
         }).done(function( data ) {
             console.log(data);
-            //Guardarme el user id
+            //Guardar el user id
             if (data){
                 $('.log-in').hide();
                 $('.select-users').show();
                 loadPlayers(data.id_player);
+                localStorage.setItem("player", data.name_player);
             }
         }).error(function(error, textStatus){
             console.log(error);
@@ -38,7 +39,18 @@ $(document).ready(function(){
             dataType: "json"
         }).done(function( data ) {
             console.log(data);
-            //Guardarme el user id
+            /*for (var i in data){
+                var name = data[i].name_player;
+                var id = data[i].id_player;
+
+                $('#userlist').
+            }*/
+            $.each(data, function (i, item) {
+                $('#userlist').append($('<option>', { 
+                    value: item.id_player,
+                    text : item.name_player 
+                }));
+            });
         }).error(function(error, textStatus){
             console.log(error);
         });
@@ -46,6 +58,7 @@ $(document).ready(function(){
 
 
     $('#play-game').on("click", function(){
+        window.location.href = "game.html";
         console.log("hola")
     });
 })

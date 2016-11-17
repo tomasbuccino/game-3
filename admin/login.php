@@ -8,9 +8,11 @@
 
 	if(mysqli_num_rows($response)>=1){
    		while($obj = mysqli_fetch_object($response)){
+   			//Agregar la pass
 			$matriz = array('name_player' => $obj->name_player, 'id_player' => $obj->id_player);
 		}
 		$datos = json_encode($matriz);
+		session_start();
    	}else{
    		$datos = json_encode(false);
    	}
