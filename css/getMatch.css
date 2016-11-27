@@ -1,0 +1,40 @@
+/*
+Error: Inconsistent indentation: 4 spaces were used for indentation, but the rest of the document was indented using 1 tab.
+        on line 4 of /opt/lampp/htdocs/game-3/admin/getMatch.php
+
+1: <?php
+2: 	//session_start();
+3: 	require_once("connection.php");
+4:     $connection = new connection;
+5: 	
+6: 	$id;
+7: 	//pero el momento en que se creó tiene que ser de hace 20 segundos.
+8: 	$query = "SELECT * FROM partidas WHERE id_player = '$id'";
+9: 	if (mysqli_query ($connection->connected, $query)) {
+
+Backtrace:
+/opt/lampp/htdocs/game-3/admin/getMatch.php:4
+/var/lib/gems/1.9.1/gems/sass-3.4.21/lib/sass/engine.rb:483:in `block in tabulate'
+/var/lib/gems/1.9.1/gems/sass-3.4.21/lib/sass/engine.rb:441:in `each'
+/var/lib/gems/1.9.1/gems/sass-3.4.21/lib/sass/engine.rb:441:in `each_with_index'
+/var/lib/gems/1.9.1/gems/sass-3.4.21/lib/sass/engine.rb:441:in `tabulate'
+/var/lib/gems/1.9.1/gems/sass-3.4.21/lib/sass/engine.rb:406:in `_to_tree'
+/var/lib/gems/1.9.1/gems/sass-3.4.21/lib/sass/engine.rb:378:in `_render_with_sourcemap'
+/var/lib/gems/1.9.1/gems/sass-3.4.21/lib/sass/engine.rb:295:in `render_with_sourcemap'
+/var/lib/gems/1.9.1/gems/sass-3.4.21/lib/sass/plugin/compiler.rb:490:in `update_stylesheet'
+/var/lib/gems/1.9.1/gems/sass-3.4.21/lib/sass/plugin/compiler.rb:215:in `block in update_stylesheets'
+/var/lib/gems/1.9.1/gems/sass-3.4.21/lib/sass/plugin/compiler.rb:209:in `each'
+/var/lib/gems/1.9.1/gems/sass-3.4.21/lib/sass/plugin/compiler.rb:209:in `update_stylesheets'
+/var/lib/gems/1.9.1/gems/sass-3.4.21/lib/sass/plugin.rb:82:in `update_stylesheets'
+/var/lib/gems/1.9.1/gems/sass-3.4.21/lib/sass/exec/sass_scss.rb:363:in `watch_or_update'
+/var/lib/gems/1.9.1/gems/sass-3.4.21/lib/sass/exec/sass_scss.rb:51:in `process_result'
+/var/lib/gems/1.9.1/gems/sass-3.4.21/lib/sass/exec/base.rb:52:in `parse'
+/var/lib/gems/1.9.1/gems/sass-3.4.21/lib/sass/exec/base.rb:19:in `parse!'
+/var/lib/gems/1.9.1/gems/sass-3.4.21/bin/sass:13:in `<top (required)>'
+/usr/local/bin/sass:23:in `load'
+/usr/local/bin/sass:23:in `<main>'
+*/
+body:before {
+  white-space: pre;
+  font-family: monospace;
+  content: "Error: Inconsistent indentation: 4 spaces were used for indentation, but the rest of the document was indented using 1 tab.\A         on line 4 of /opt/lampp/htdocs/game-3/admin/getMatch.php\A \A 1: <?php\A 2: 	//session_start();\A 3: 	require_once(\"connection.php\");\A 4:     $connection = new connection;\A 5: 	\A 6: 	$id;\A 7: 	//pero el momento en que se creó tiene que ser de hace 20 segundos.\A 8: 	$query = \"SELECT * FROM partidas WHERE id_player = '$id'\";\A 9: 	if (mysqli_query ($connection->connected, $query)) {"; }
