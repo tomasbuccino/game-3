@@ -29,7 +29,7 @@
 	$player_1 = $_POST["player_1"];
 	$timestamp = $_POST["time"];
 	//
-	$query = "UPDATE home SET $language='$newValue' WHERE value='$realValue'";
+	$query = "UPDATE partidas SET $language='$newValue' WHERE value='$realValue'";
 	$response = mysqli_query($connection->connected, $query);
 	if(mysqli_num_rows($response)>=1){
    		while($obj = mysqli_fetch_object($response)){
