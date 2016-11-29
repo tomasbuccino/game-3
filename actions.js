@@ -40,7 +40,7 @@ $(document).ready(function(){
                 match.player = data.id_player;
                 loadPlayers(data.id_player);
                 //Asi no, con session storage
-                getMatches();
+                getMatchesInterval();
                 localStorage.setItem("player", data.name_player);
                 localStorage.setItem("password", data.pass_player);
             }
@@ -85,9 +85,6 @@ $(document).ready(function(){
     }
 
 
-
-    
-
     $('#play-game').on("click", function(){
         match.opponent = $('#userlist').val();
         match.time = (new Date()).getTime();
@@ -109,40 +106,34 @@ $(document).ready(function(){
     });
     
     //Llamar cada 20 segundos para ver si hay una partida nueva 
-    var amountMatches = 0;
-    var maxMatches = 0;
-    function getMatches(){
-        //La llamo una vez para setear el máximo de partidas y después dentro del interval
-
-        amountMatches = getAllMatches(2);
-        console.log(amountMatches)
-        maxMatches = amountMatches;
-
-        // setInterval(function() {
-        //     getAllMatches(maxMatches);
-        // }, 20000);
-        
-    }
-
-    function getAllMatches(num){
-        $.ajax({
-            //url: "http://www.brendarychter.com.ar/game/admin/gameMatch.php",
-            url: "admin/getMatch.php",
-            type: "POST",
-            data: match,
-            cache: false,
-            dataType: "json"
-        }).success(function( data ) {
-            console.log(data);
-            if(data.length > num){
-                num = data.length;
-                //console.log("hay partida nueva");
-                return 4;
-            }
-        }).error(function(error, textStatus){
-            console.log("No pudo conectarse: " + textStatus);
-        });
-    }
+    function getMatchesInterval(){
+        var amount = -1;
+        setInterval(function() {
+            $.ajax({
+                //url: "http://www.brendarychter.com.ar/game/admin/gameMatch.php",
+                url: "admin/getMatch.php",
+                type: "POST",
+                data: match,
+                cache: false,
+                dataType: "json"
+            }).success(function( data ) {
+                //necesito esta partida, de ahora
+                var id_partida = data[i].id_partida;
+                var matches = data.length;
+                if (matches == 0){
+                    console.log("aún no hay partidas, no refrescar");
+                }
+                if (matches > 0){
+                    if (matches > amount){
+                        amount = matches;
+                        console.log("avisar que hay partida nueva");
+                    }
+                }
+            }).error(function(error, textStatus){
+                console.log("No pudo conectarse: " + textStatus);
+            });
+        }, 20000);
+    }/**/
     /*=====  End of Log in and select player  ======*/
     
 
@@ -190,8 +181,6 @@ $(document).ready(function(){
                 }
             }
             
-
-
             //  TIMER
             timer = game.time.create(false);
 
@@ -228,7 +217,22 @@ $(document).ready(function(){
             if (Number(this) == random){
                 console.log("perdio, volver a empezar");
                 game.world.removeAll();
-                createGame();
+                params = {};
+                params.time = match.time;
+                params.player_1 = match.player;
+
+                $.ajax({
+                    //url: "http://blinkapp.com.ar/back/user/adminUser.php",
+                    url: "admin/getMatchByTimestamp.php",
+                    type: "POST",
+                    data: match,
+                    cache: false,
+                    dataType: "json"
+                }).done(function( data ) {
+                    //createGame();
+                }).error(function(error, textStatus){
+                    console.log(error);
+                });
             }
             console.log(this)
             this.visible = false
