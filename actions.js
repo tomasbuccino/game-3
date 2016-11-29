@@ -40,6 +40,7 @@ $(document).ready(function(){
                 match.player = data.id_player;
                 loadPlayers(data.id_player);
                 //Asi no, con session storage
+                getMatches();
                 localStorage.setItem("player", data.name_player);
                 localStorage.setItem("password", data.pass_player);
             }
@@ -94,7 +95,7 @@ $(document).ready(function(){
         $('.select-users').hide();
         $.ajax({
             //url: "http://blinkapp.com.ar/back/user/adminUser.php",
-            url: "admin/gameMatch.php",
+            url: "admin/createMatch.php",
             type: "POST",
             data: match,
             cache: false,
@@ -107,7 +108,41 @@ $(document).ready(function(){
         //Escribe en base
     });
     
-    
+    //Llamar cada 20 segundos para ver si hay una partida nueva 
+    var amountMatches = 0;
+    var maxMatches = 0;
+    function getMatches(){
+        //La llamo una vez para setear el máximo de partidas y después dentro del interval
+
+        amountMatches = getAllMatches(2);
+        console.log(amountMatches)
+        maxMatches = amountMatches;
+
+        // setInterval(function() {
+        //     getAllMatches(maxMatches);
+        // }, 20000);
+        
+    }
+
+    function getAllMatches(num){
+        $.ajax({
+            //url: "http://www.brendarychter.com.ar/game/admin/gameMatch.php",
+            url: "admin/getMatch.php",
+            type: "POST",
+            data: match,
+            cache: false,
+            dataType: "json"
+        }).success(function( data ) {
+            console.log(data);
+            if(data.length > num){
+                num = data.length;
+                //console.log("hay partida nueva");
+                return 4;
+            }
+        }).error(function(error, textStatus){
+            console.log("No pudo conectarse: " + textStatus);
+        });
+    }
     /*=====  End of Log in and select player  ======*/
     
 
@@ -115,17 +150,18 @@ $(document).ready(function(){
     =            Start game            =
     =============================================*/
     function createGame(){
-        var game = new Phaser.Game(800, 600, Phaser.AUTO, 'game', { preload: preload, create: create, update: update });
+        var game = new Phaser.Game(600, 600, Phaser.AUTO, 'game', { preload: preload, create: create, update: update });
 
         //GLOBAL VARIABLES
         var timer;
         var total = 0;
 
-        var random = Math.floor(Math.random() * 35) + 0;
+        var random = Math.floor(Math.random() * 36) + 1;
 
         function preload() {
 
             game.load.spritesheet('button', 'assets/images/pipe.png', 193, 71);
+            game.load.spritesheet('piece', 'assets/images/piece.png', 193, 71);
             //game.load.image('background','assets/misc/starfield.jpg');
             //preload cargar el index php que me trae archivos en formato json
             //la sesion del usuario, no del storage
@@ -136,13 +172,24 @@ $(document).ready(function(){
 
             game.stage.backgroundColor = '#182d3b';
 
-            //background = game.add.tileSprite(0, 0, 800, 600, 'background');
-
-            button = game.add.button(game.world.centerX - 95, 400, 'button', actionOnClick, this, 2, 1, 0);
-
-            button.onInputOver.add(over, this);
-            button.onInputOut.add(out, this);
-            button.onInputUp.add(up, this);
+            var rows = 6;
+            var cols = 6;
+            var n = 1;
+            for (var i = 0; i < rows; i++){
+                for (var j = 0; j < cols; j++){
+                    var button; // Creo variable para que cada botón sea distinto
+                    if (n == random){
+                        piece = game.add.button(75*i + 40, 75*j + 90, 'piece');
+                    }
+                    button = game.add.button(75*i + 40, 75*j + 90, 'button', actionOnClick, this);
+                    button.id = n;
+                    button.onInputOver.add(over, this);
+                    button.onInputOut.add(out, this);
+                    button.onInputUp.add(up, this);
+                    n++;
+                }
+            }
+            
 
 
             //  TIMER
@@ -151,11 +198,8 @@ $(document).ready(function(){
             //  Set a TimerEvent to occur after 2 seconds
             timer.loop(2000, updateCounter, this);
 
-            //  Start the timer running - this is important!
-            //  It won't start automatically, allowing you to hook it to button events and the like.
             timer.start();
-            console.log(random);
-            generateButtons();
+            console.log("random piece " + random);
         }
 
         function update(){
@@ -168,23 +212,7 @@ $(document).ready(function(){
         }
 
         function up() {
-            console.log('button up', arguments);
-            console.log('button clicked');
-            params= {};
-            params.action = "createUser";
-            //data json?????????
-            $.ajax({
-                //sin el http??
-                //url: "http://www.brendarychter.com.ar/game/admin/gameMatch.php",
-                url: "admin/gameMatch.php",
-                type: "POST",
-                cache: false,
-                dataType: "text"
-            }).done(function( data ) {
-              console.log("click in button. write in table")
-            }).error(function(error, textStatus){
-                console.log("No pudo conectarse: " + textStatus);
-            });
+            //console.log(this)
         }
 
         function over() {
@@ -196,49 +224,15 @@ $(document).ready(function(){
         }
 
         function actionOnClick () {
+            // console.log(Number(this))
+            if (Number(this) == random){
+                console.log("perdio, volver a empezar");
+                game.world.removeAll();
+                createGame();
+            }
+            console.log(this)
+            this.visible = false
 
-            
-
-        }
-        //Llamar cada 20 segundos para ver si hay una partida nueva 
-        function callToDataBase(){
-            setInterval(function() {
-                $.ajax({
-                    //agregar notificaciones
-                    //url: "http://www.brendarychter.com.ar/game/admin/gameMatch.php",
-                    url: "admin/getMatch.php",
-                    type: "POST",
-                    cache: false,
-                    dataType: "text"
-                }).done(function( data ) {
-                  
-                }).error(function(error, textStatus){
-                    console.log("No pudo conectarse: " + textStatus);
-                });
-            }, 20000);
-            
-        }
-
-
-        function generateButtons () {
-            //Grilla de cuadrados
-
-          // var button; // Creo variable para que cada botón sea distinto
-          // var j=0;  
-          // for (var i = 0; i < 7; i++) {
-          //   if(i<4){
-          //     // Posiciono la primer fila.
-          //     button = this.game.add.button(180 + 280*i, 330, 'button', this.clickHandler, this, 2, 1, 0);
-          //     game.add.text(205 + 280*i, 410, notes[i][0], style);
-          //   }
-          //   else{
-          //     // Posiciono la segunda fila.
-          //     button = this.game.add.button(320 +  280*j, 520, 'button', this.clickHandler, this, 2, 1, 0);
-          //     game.add.text(350 +  280*j, 610, notes[i][0], style);
-          //     j++;
-          //   }    
-          //   button.name = notes[i][0];
-          // }
         }
     }
     

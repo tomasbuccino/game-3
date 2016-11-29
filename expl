@@ -1,0 +1,20 @@
+function generateButtons () {
+      var button; // Creo variable para que cada botón sea distinto
+      var j=0;  
+      for (var i = 0; i < 7; i++) {
+        if(i<4){
+          // Posiciono la primer fila.
+          button = this.game.add.button(180 + 280*i, 330, 'button', this.clickHandler, this, 2, 1, 0);
+          game.add.text(205 + 280*i, 410, notes[i][0], style);
+        }
+        else{
+          // Posiciono la segunda fila.
+          button = this.game.add.button(320 +  280*j, 520, 'button', this.clickHandler, this, 2, 1, 0);
+          game.add.text(350 +  280*j, 610, notes[i][0], style);
+          j++;
+        }    
+        button.name = notes[i][0];
+      }
+  }
+
+  ultima cosa, en phaser tenes las funciones---> preload, cargas las cosas. create: las agregas a la escena. update: actualzia las cosas 30 frame por sec, ahi metes lo que necesite movimiento o algun loistener o chequeos de estados
