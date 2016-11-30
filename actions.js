@@ -148,7 +148,7 @@ $(document).ready(function(){
         var timer;
         var total = 0;
 
-        var random = Math.floor(Math.random() * 36) + 1;
+        var random = Math.floor(Math.random() * 36) + 2;
 
         function preload() {
 
@@ -166,15 +166,12 @@ $(document).ready(function(){
 
             var rows = 6;
             var cols = 6;
-            var n = 1;
+            var n = 0;
             for (var i = 0; i < rows; i++){
                 for (var j = 0; j < cols; j++){
                     var button; // Creo variable para que cada botón sea distinto
-                    if (n == random){
-                        piece = game.add.button(75*i + 40, 75*j + 90, 'piece');
-                    }
-                    button = game.add.button(75*i + 40, 75*j + 90, 'button', actionOnClick, button);
-                    button.id = n;
+                    button = game.add.button(75*i + 40, 75*j + 90, 'button', actionOnClick);
+                    button.num = n;
                     button.onInputOver.add(over, this);
                     button.onInputOut.add(out, this);
                     button.onInputUp.add(up, this);
@@ -214,11 +211,11 @@ $(document).ready(function(){
         }
 
         function actionOnClick () {
-            var btn = game.add.button(75*0 + 40, 75*0 + 90, 'piece', actionOnClick, this);
-            // console.log(Number(this))
+
             if (Number(this) == random){
                 console.log("perdio, volver a empezar");
                 game.world.removeAll();
+                piece = game.add.button(this.position.x, this.position.y, 'piece');
                 params = {};
                 params.time = match.time;
                 params.player_1 = match.player;
@@ -236,7 +233,7 @@ $(document).ready(function(){
                     console.log(error);
                 });
             }
-            console.log(this.x)
+            this.destroy();
 
         }
     }
