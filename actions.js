@@ -142,13 +142,13 @@ $(document).ready(function(){
     =            Start game            =
     =============================================*/
     function createGame(){
-        var game = new Phaser.Game(600, 600, Phaser.AUTO, 'game', { preload: preload, create: create, update: update });
+        var game = new Phaser.Game(525, 600, Phaser.AUTO, 'game', { preload: preload, create: create, update: update });
 
         //GLOBAL VARIABLES
         var timer;
         var total = 0;
 
-        var random = Math.floor(Math.random() * 36) + 2;
+        var random = Math.floor(Math.random() * 36) + 0;
 
         function preload() {
 
@@ -211,15 +211,22 @@ $(document).ready(function(){
         }
 
         function actionOnClick () {
-
-            if (Number(this) == random){
-                console.log("perdio, volver a empezar");
+            console.log(this.num)
+            if (this.num == random){
+                console.log("Ganaste!");
                 game.world.removeAll();
                 piece = game.add.button(this.position.x, this.position.y, 'piece');
                 params = {};
                 params.time = match.time;
-                params.player_1 = match.player;
-
+                //query para ver si la partida tiene ya un player 1
+                if(!player_1){
+                    params.player_1 = match.player;
+                    params.time_player_1 = total;
+                }else{
+                    params.player_2 = match.player;
+                    params.time_player_2 = total;
+                }
+                
                 $.ajax({
                     //url: "http://blinkapp.com.ar/back/user/adminUser.php",
                     url: "admin/getMatchByTimestamp.php",
