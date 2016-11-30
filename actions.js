@@ -90,6 +90,7 @@ $(document).ready(function(){
         match.time = (new Date()).getTime();
         console.log(match.time)
         $('.select-users').hide();
+        $('.this-game').show();
         $.ajax({
             //url: "http://blinkapp.com.ar/back/user/adminUser.php",
             url: "admin/createMatch.php",
@@ -118,7 +119,7 @@ $(document).ready(function(){
                 dataType: "json"
             }).success(function( data ) {
                 //necesito esta partida, de ahora
-                var id_partida = data[i].id_partida;
+                //var id_partida = data[i].id_partida;
                 var matches = data.length;
                 if (matches == 0){
                     console.log("aún no hay partidas, no refrescar");
@@ -172,7 +173,7 @@ $(document).ready(function(){
                     if (n == random){
                         piece = game.add.button(75*i + 40, 75*j + 90, 'piece');
                     }
-                    button = game.add.button(75*i + 40, 75*j + 90, 'button', actionOnClick, this);
+                    button = game.add.button(75*i + 40, 75*j + 90, 'button', actionOnClick, button);
                     button.id = n;
                     button.onInputOver.add(over, this);
                     button.onInputOut.add(out, this);
@@ -213,6 +214,7 @@ $(document).ready(function(){
         }
 
         function actionOnClick () {
+            var btn = game.add.button(75*0 + 40, 75*0 + 90, 'piece', actionOnClick, this);
             // console.log(Number(this))
             if (Number(this) == random){
                 console.log("perdio, volver a empezar");
@@ -234,8 +236,7 @@ $(document).ready(function(){
                     console.log(error);
                 });
             }
-            console.log(this)
-            this.visible = false
+            console.log(this.x)
 
         }
     }
