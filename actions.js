@@ -11,7 +11,8 @@ $(document).ready(function(){
     var match = {
         opponent: "",
         time: "",
-        player: ""
+        player: "",
+        player2: ""
     }
     
     /*================================================
@@ -120,10 +121,12 @@ $(document).ready(function(){
             }).success(function( data ) {
                 //necesito esta partida, de ahora
                 //var id_partida = data[i].id_partida;
+                //match.idMatch = 
                 var matches = data.length;
                 if (matches == 0){
                     console.log("aún no hay partidas, no refrescar");
                 }
+                //me tengo que guardar el timestamp para comprobar que no sea esta partida
                 if (matches > 0){
                     if (matches > amount){
                         amount = matches;
@@ -141,8 +144,9 @@ $(document).ready(function(){
     /*=============================================
     =            Start game            =
     =============================================*/
+    var game;
     function createGame(){
-        var game = new Phaser.Game(525, 600, Phaser.AUTO, 'game', { preload: preload, create: create, update: update });
+        game = new Phaser.Game(525, 600, Phaser.AUTO, 'game', { preload: preload, create: create, update: update });
 
         //GLOBAL VARIABLES
         var timer;
@@ -150,10 +154,14 @@ $(document).ready(function(){
 
         var random = Math.floor(Math.random() * 36) + 0;
 
-        function preload() {
 
-            game.load.spritesheet('button', 'assets/images/pipe.png', 193, 71);
-            game.load.spritesheet('piece', 'assets/images/piece.png', 193, 71);
+        function preload() {
+            game.load.image('background', 'assets/images/background.png');
+
+            //game.load.spritesheet('button', 'assets/images/pipe.png', 193, 71);
+            game.load.spritesheet('button', 'assets/images/grass.png', 193, 71);
+            //game.load.spritesheet('piece', 'assets/images/piece.png', 193, 71);
+            game.load.spritesheet('piece', 'assets/images/treasure.png', 193, 71);
             //game.load.image('background','assets/misc/starfield.jpg');
             //preload cargar el index php que me trae archivos en formato json
             //la sesion del usuario, no del storage
@@ -163,6 +171,7 @@ $(document).ready(function(){
         function create() {
 
             game.stage.backgroundColor = '#182d3b';
+            game.add.sprite(0, 0, 'background');
 
             var rows = 6;
             var cols = 6;
@@ -215,18 +224,21 @@ $(document).ready(function(){
             if (this.num == random){
                 console.log("Ganaste!");
                 game.world.removeAll();
+                game.add.sprite(0, 0, 'background');
                 piece = game.add.button(this.position.x, this.position.y, 'piece');
+
+
                 params = {};
                 params.time = match.time;
+                console.log(params.time)
                 //query para ver si la partida tiene ya un player 1
-                if(!player_1){
-                    params.player_1 = match.player;
-                    params.time_player_1 = total;
-                }else{
-                    params.player_2 = match.player;
-                    params.time_player_2 = total;
-                }
-                
+                params.player_1 = match.player;
+                params.time_player_1 = total;
+                params.player_2 = match.player2;
+                params.time_player_2 = total;
+
+
+                timer.destroy();
                 $.ajax({
                     //url: "http://blinkapp.com.ar/back/user/adminUser.php",
                     url: "admin/getMatchByTimestamp.php",
@@ -248,6 +260,29 @@ $(document).ready(function(){
 
     
     /*=====  End of Start game  ======*/
+    
+
+    /*================================
+    =            Opponent            =
+    ================================*/
+    
+    $('#choose-opponent').on('click', function(){
+        
+    })
+    
+    /*=====  End of Opponent  ======*/
+    
+
+    /*====================================
+    =            Restart game            =
+    ====================================*/
+    
+    $('#restart-game').on('click', function(){
+        $('#game').remove();
+        createGame();
+    })
+    
+    /*=====  End of Restart game  ======*/
     
     
 })

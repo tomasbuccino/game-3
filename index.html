@@ -2,30 +2,41 @@
 <html>
     <head>  
         <meta charset="utf-8" />
-        <title> Aventura - Empezar!</title>
+        <title> Treasure hunt</title>
         <link rel="stylesheet" href="css/styles.css">
+        <link rel="icon" href="assets/images/treasure.png">
     </head>
 
     <body>
         <div class="log-in">
-            <p>Aventura</p>
-            <input type="text" placeholder="Nombre de usuario" id="username"/>
-            <input type="password" placeholder="Contrase&ntilde;a" id="password"/>
+            <p>Treasure hunt</p>
+            <input type="text" placeholder="Username" id="username"/>
+            <input type="password" placeholder="Password" id="password"/>
             <button type="submit" id="log-in">Log in</button>
 
-            <div class="sign-in">
+            <!-- <div class="sign-in">
                 <span>No ten&eacute;s cuenta?</span><strong>Registrate</strong>
-            </div>
+            </div> -->
         </div>
 
         <div class="select-users">
+            <span>You must find the treasure in the shortest possible time</span>
+            <span>Click the pieces</span>
+            <label>Choose your opponent</label>
             <select name="userslist" id="userlist"></select>
             <button type="submit" id="play-game">Play!</button>
+            <p>You have <strong id="new-matches"></strong> new game(s)</p>
         </div>
         <div class="this-game">
-            <p>Player 1: <strong>you</strong></p>
-            <p>Player 2: <strong id="opponent-name"></strong></p>
-            <p>New games: <strong id="new-matches"></strong></p>
+            <div class="game-properties1">
+                <p>Player 1: <strong>you</strong></p>
+                <p>Player 2: <strong id="opponent-name"></strong></p>
+            </div>
+            <div class="game-properties2">
+                <button id="restart-game">Restart game</button>
+                <button id="choose-opponent">Choose opponent</button>
+                <button id="new-games">See new games</button>
+            </div>
         </div>
         <main id="game"></main>
         <script src="utils/phaser.js"></script>
