@@ -11,7 +11,9 @@ $(document).ready(function(){
     var match = {
         opponent: "",
         time: "",
-        player: ""
+        player: "",
+        player2: "",
+        idPartida: ""
     }
     
     /*================================================
@@ -90,6 +92,7 @@ $(document).ready(function(){
         match.time = (new Date()).getTime();
         console.log(match.time)
         $('.select-users').hide();
+        $('.this-game').show();
         $.ajax({
             //url: "http://blinkapp.com.ar/back/user/adminUser.php",
             url: "admin/createMatch.php",
@@ -118,11 +121,15 @@ $(document).ready(function(){
                 dataType: "json"
             }).success(function( data ) {
                 //necesito esta partida, de ahora
-                var id_partida = data[i].id_partida;
+                //var id_partida = data[i].id_partida;
+                //match.idMatch = 
+                console.log(data[0].id_partida);
+                match.idPartida = data[0].id_partida;
                 var matches = data.length;
                 if (matches == 0){
                     console.log("aún no hay partidas, no refrescar");
                 }
+                //me tengo que guardar el timestamp para comprobar que no sea esta partida
                 if (matches > 0){
                     if (matches > amount){
                         amount = matches;
@@ -140,19 +147,24 @@ $(document).ready(function(){
     /*=============================================
     =            Start game            =
     =============================================*/
+    var game;
     function createGame(){
-        var game = new Phaser.Game(600, 600, Phaser.AUTO, 'game', { preload: preload, create: create, update: update });
+        game = new Phaser.Game(525, 600, Phaser.AUTO, 'game', { preload: preload, create: create, update: update });
 
         //GLOBAL VARIABLES
         var timer;
         var total = 0;
 
-        var random = Math.floor(Math.random() * 36) + 1;
+        var random = Math.floor(Math.random() * 36) + 0;
+
 
         function preload() {
+            game.load.image('background', 'assets/images/background.png');
 
-            game.load.spritesheet('button', 'assets/images/pipe.png', 193, 71);
-            game.load.spritesheet('piece', 'assets/images/piece.png', 193, 71);
+            //game.load.spritesheet('button', 'assets/images/pipe.png', 193, 71);
+            game.load.spritesheet('button', 'assets/images/grass.png', 193, 71);
+            //game.load.spritesheet('piece', 'assets/images/piece.png', 193, 71);
+            game.load.spritesheet('piece', 'assets/images/treasure.png', 193, 71);
             //game.load.image('background','assets/misc/starfield.jpg');
             //preload cargar el index php que me trae archivos en formato json
             //la sesion del usuario, no del storage
@@ -162,18 +174,16 @@ $(document).ready(function(){
         function create() {
 
             game.stage.backgroundColor = '#182d3b';
+            game.add.sprite(0, 0, 'background');
 
             var rows = 6;
             var cols = 6;
-            var n = 1;
+            var n = 0;
             for (var i = 0; i < rows; i++){
                 for (var j = 0; j < cols; j++){
                     var button; // Creo variable para que cada botón sea distinto
-                    if (n == random){
-                        piece = game.add.button(75*i + 40, 75*j + 90, 'piece');
-                    }
-                    button = game.add.button(75*i + 40, 75*j + 90, 'button', actionOnClick, this);
-                    button.id = n;
+                    button = game.add.button(75*i + 40, 75*j + 90, 'button', actionOnClick);
+                    button.num = n;
                     button.onInputOver.add(over, this);
                     button.onInputOut.add(out, this);
                     button.onInputUp.add(up, this);
@@ -213,19 +223,29 @@ $(document).ready(function(){
         }
 
         function actionOnClick () {
-            // console.log(Number(this))
-            if (Number(this) == random){
-                console.log("perdio, volver a empezar");
+            console.log(this.num)
+            if (this.num == random){
+                console.log("Ganaste!");
                 game.world.removeAll();
+                game.add.sprite(0, 0, 'background');
+                piece = game.add.button(this.position.x, this.position.y, 'piece');
+
+
                 params = {};
                 params.time = match.time;
+                //query para ver si la partida tiene ya un player 1
                 params.player_1 = match.player;
+                params.time_player_1 = total;
+                console.log(total)
+                params.id_partida = match.idPartida;
+                console.log(params.id_partida)
 
+                timer.destroy();
                 $.ajax({
                     //url: "http://blinkapp.com.ar/back/user/adminUser.php",
                     url: "admin/getMatchByTimestamp.php",
                     type: "POST",
-                    data: match,
+                    data: params,
                     cache: false,
                     dataType: "json"
                 }).done(function( data ) {
@@ -234,8 +254,7 @@ $(document).ready(function(){
                     console.log(error);
                 });
             }
-            console.log(this)
-            this.visible = false
+            this.destroy();
 
         }
     }
@@ -243,6 +262,29 @@ $(document).ready(function(){
 
     
     /*=====  End of Start game  ======*/
+    
+
+    /*================================
+    =            Opponent            =
+    ================================*/
+    
+    $('#choose-opponent').on('click', function(){
+        
+    })
+    
+    /*=====  End of Opponent  ======*/
+    
+
+    /*====================================
+    =            Restart game            =
+    ====================================*/
+    
+    $('#restart-game').on('click', function(){
+        $('#game').remove();
+        createGame();
+    })
+    
+    /*=====  End of Restart game  ======*/
     
     
 })
